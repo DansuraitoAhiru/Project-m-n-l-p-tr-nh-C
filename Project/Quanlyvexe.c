@@ -125,7 +125,7 @@ int main(){
 }
 
 int isEmpty(const char *str) {
-    if (!str) return 1;                                                    // Neu con tro NULL(ko co gt de su dung), coi nhu rong
+    if (!str) return 1;                                                    // Neu con tro NULL (ko co gt de su dung), coi nhu rong
     while (*str) {
         if (*str != ' ' && *str != '\t' && *str != '\n' && *str != '\r')
             return 0;                                                     // Co ky tu khong phai khoang trang -> khong rong
@@ -143,7 +143,7 @@ int isTripIdExists(Trip *trips, int length, char *id) {
     return 0;
 }
 
-double getValidNumber(const char *msg) {
+double getValidNumber(const char *msg) {                                   //const char de co dinh chuoi, ko thay doi dc
     char buffer[50];
     double value;
 
@@ -437,9 +437,9 @@ void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
         newTicket.paymentStatus = 0;
         newTicket.status = 0;
 
-        sprintf(newTicket.ticketId, "VE%03d", *ticketCount + createdCount + 1);
-
-        createdTickets[createdCount++] = newTicket;
+        sprintf(newTicket.ticketId, "#%03d", *ticketCount + createdCount + 1);   //sprintf ghi du lieu vào 1 chuoi ký tu theo dinh dang, giong printf nhung không in ra màn hình
+                                                                                //*ticketCount: so ve da có truoc dó, createdCount: so vé dã tao trong lan dat hien tai
+        createdTickets[createdCount++] = newTicket;                             //+1 de nhay sang so tiep theo
     }
 
     for (i = 0; i < createdCount; i++) {
@@ -737,6 +737,4 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
 	else{
 		printf("Lua chon ko hop le!\n");
 	}
-}
-
-
+}	
