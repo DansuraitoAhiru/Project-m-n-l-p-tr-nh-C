@@ -125,7 +125,7 @@ int main(){
 }
 
 int isEmpty(const char *str) {
-    if (!str) return 1;                                                    // Neu con tro NULL, coi nhu rong
+    if (!str) return 1;                                                    // Neu con tro NULL(ko co gt), coi nhu rong
     while (*str) {
         if (*str != ' ' && *str != '\t' && *str != '\n' && *str != '\r')
             return 0;                                                     // Co ky tu khong phai khoang trang -> khong rong
@@ -738,3 +738,4 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
 		printf("Lua chon ko hop le!\n");
 	}
 }
+
