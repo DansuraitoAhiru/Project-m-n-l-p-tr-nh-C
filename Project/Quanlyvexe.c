@@ -44,6 +44,7 @@ void checkTicketStatus(Trip *trips, int tripCount, Ticket *tickets, int *ticketC
 void listTrips(Trip *trips, int length);
 void payTicket(Ticket *tickets, int ticketCount);
 void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCount);
+void tripReport(Trip *cx, int tripCount, Ticket *tickets, int ticketCount);
 
 int main(){
 	int choice;
@@ -111,6 +112,8 @@ int main(){
 			}
 			
 			case 8:{
+				if(flag==0) printf("Chua co chuyen xe nao! Vui long chon 1 de nhap thong tin chuyen xe!\n");
+				else tripReport(cx,length, tickets, ticketCount);
 				break;
 			}
 			
@@ -138,14 +141,15 @@ int isTripIdExists(Trip *trips, int length, char *id) {
 	int i;
     for (i = 0; i < length; i++) {
         if (strcmp(trips[i].tripId, id) == 0)
-            return 1;
+            return 1;                                                     // 1 la id da ton tai
     }
-    return 0;
+    return 0;                                                             // 0 la id chua ton tai
 }
 
 double getValidNumber(const char *msg) {                                   //const char de co dinh chuoi, ko thay doi dc
     char buffer[50];
     double value;
+    int i;
 
     while (1) {
         printf("%s", msg);
@@ -155,12 +159,31 @@ double getValidNumber(const char *msg) {                                   //con
             printf("Gia tri khong duoc de rong!\n");
             continue;
         }
-        char *endptr;                                          //endptr là con tro ký tu (char*) dùng trong các hàm chuyen doi chuoi sang so
-        value = strtod(buffer, &endptr);                       //chuyen chuoi sang double
-        if (*endptr != '\0') {
-            printf("Gia tri khong hop le! Hay nhap so.\n");
+        if (buffer[0] == '\0') {
+            printf("Ban chua nhap gi! Vui long nhap so!\n");
             continue;
         }
+        int valid=1;
+        int count=0;
+        for (i = 0; buffer[i] != '\0'; i++) {
+            if (buffer[i] == '.') {               // gap dau cham
+                count++;
+                if (count > 0) {                // >0 -> so thap phan -> sai
+                    valid=0;
+                    break;
+                }
+            }
+            else if (buffer[i] < '0' || buffer[i] > '9') { // không phai so -> sai, '0' (mã ASCII 48)  ->  '9' (mã ASCII 57)
+                valid=0;                                   // ngoai khoang nay deu la ky tu dac biet, chu
+                break;
+            }
+        }
+
+        if (!valid) {  // <-- quay lai dau while thi valid quay lai = 1
+            printf("Chi duoc nhap so! Khong duoc nhap chu cai.\n");
+            continue;
+        }
+        value = atof(buffer);   // doi chuoi sang double
         return value;
     }
 }
@@ -177,7 +200,7 @@ void addInfoTrip(Trip *cx, int *length) {
 	        newTrip.tripId[strcspn(newTrip.tripId, "\n")] = 0;
 	        if (isEmpty(newTrip.tripId)) {
 	            printf("Ma chuyen xe khong duoc rong!\n");
-	        } else if (isTripIdExists(cx, *length, newTrip.tripId)) {
+	        } else if (isTripIdExists(cx, *length, newTrip.tripId)) {     // ktra id ton tai hay chua?
 	            printf("Ma chuyen xe da ton tai!\n");
 	        } else {
 	            break;
@@ -358,7 +381,9 @@ void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
         fgets(tripId, sizeof(tripId), stdin);
         tripId[strcspn(tripId, "\n")] = 0;
 
-        if (isEmpty(tripId)) {
+        if(strcmp(tripId, "0") == 0){
+        	printf("Thoat!\n");
+        } else if (isEmpty(tripId)) {
             printf("Ma chuyen xe khong duoc rong!\n");
         } else if (!isTripIdExists(trips, tripCount, tripId)) {
             printf("Ma chuyen xe khong ton tai!\n");
@@ -438,9 +463,9 @@ void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
         newTicket.status = 0;
 
         sprintf(newTicket.ticketId, "#%03d", *ticketCount + createdCount + 1);   //sprintf ghi du lieu vào 1 chuoi ký tu theo dinh dang, giong printf nhung không in ra màn hình
-                                                                                //*ticketCount: so ve da có truoc dó, createdCount: so vé dã tao trong lan dat hien tai
-        createdTickets[createdCount++] = newTicket;                             //+1 de nhay sang so tiep theo
-    }
+	
+        createdTickets[createdCount++] = newTicket;                             //*ticketCount: so ve da có truoc dó, createdCount: so vé dã tao trong lan dat hien tai
+    }                                                                           //+1 de nhay sang so tiep theo
 
     for (i = 0; i < createdCount; i++) {
         tickets[*ticketCount] = createdTickets[i];
@@ -512,7 +537,7 @@ void listTrips(Trip *trips, int length) {
         printf("Nhap so luong chuyen xe tren 1 trang: ");
         fgets(input, sizeof(input), stdin);
         input[strcspn(input, "\n")] = 0;
-        pageSize = atoi(input);
+        pageSize = atoi(input);            //atoi de chuyen chuoi (char) thanh so (int)
         if (isEmpty(input)) {
             pageSize=10;
             break;
@@ -637,11 +662,11 @@ void payTicket(Ticket *tickets, int ticketCount) {
         } else break;
     }
 
-    int index = -1;
+    int index = -1; //tai vi chuoi tinh tu 0 nen co the ton tai ve 0
     int i;
     for (i= 0; i < ticketCount; i++) {
         if (strcmp(tickets[i].ticketId, id) == 0) {
-            index = i;
+            index = i;  //tim thay thi se luu lai vi tri cua i
             break;
         }
     }
@@ -653,7 +678,7 @@ void payTicket(Ticket *tickets, int ticketCount) {
 
     Ticket *t = &tickets[index];
 
-    if (t->status == 1 || t->status == 2) {
+    if (t->status == 1 || t->status == 2) {   //1=Locked, 2=Cancelled
         printf("Ve ko the thanh toan vi da bi vo hieu hoa!\n");
         return;
     }
@@ -674,16 +699,17 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
         return;
     }
 	char ticketId[20];
-	do{
+	while(1) {
 		printf("Nhap ma ve: ");
 		fgets(ticketId, sizeof(ticketId), stdin);
 		ticketId[strcspn(ticketId, "\n")]=0;
 		
 		if(isEmpty(ticketId)){
 			printf("Ma ve ko duoc de trong!\n");
-			return;
+			continue;
 		}
-	} while(1);
+		break;
+	}
 	
 	Ticket *t = NULL;
 	int i;
@@ -699,7 +725,7 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
 		return;
 	}
 	
-	if(t->status == 1 || t->status == 2){
+	if(t->status == 1 || t->status == 2){     //1=locked, 2=cancelled
 		printf("Ve da bi vo hieu hoa. Ko the thao tac!\n");
 		return;
 	}
@@ -708,7 +734,6 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
 	printf("1. Khoa ve\n");
 	printf("2. Huy ve\n");
 	int action=getValidNumber("Nhap lua chon: ");
-	
 	
 	if(action == 1){
 		t->status = 1;
@@ -737,4 +762,90 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
 	else{
 		printf("Lua chon ko hop le!\n");
 	}
+}
+
+void tripReport(Trip *cx, int tripCount, Ticket *tickets, int ticketCount){
+	while(getchar() != '\n');
+	int i,j;
+	if(ticketCount == 0){
+		printf("Chua co du lieu de thong ke, bao cao!\n");
+		return;
+	}
+	printf("1. Bao cao doanh thu\n");
+	printf("2. Bao cao theo chuyen xe\n");
+	printf("3. Bao cao theo thoi gian\n");
+	int type = getValidNumber("Lua chon cua ban: ");
+	
+	if(type == 1){
+		long long revenue = 0;
+		int paidTickets = 0;
+		for(i=0; i < ticketCount; i++){
+			if(tickets[i].paymentStatus == 1){
+				revenue += tickets[i].price;
+				paidTickets++;
+			}
+		}
+		printf("Tong doanh thu: %lld Vnd\n", revenue);
+		printf("Tong ve da thanh toan: %d\n", paidTickets);
+	} 
+	
+	else if(type == 2){
+		printf("\n=================================== Bang bao cao theo chuyen xe =========================================\n");
+		printf("| %-5s | %-10s | %-10s | %-10s | %-10s | %-10s |\n", 
+		        "ID", "Tong ve", "Da thanh toan", "Huy", "Con hieu luc", "Doanh thu");
+		printf("-----------------------------------------------------------------------------------------------------------\n");
+		for(i=0; i < tripCount; i++){
+			int total=0, paid=0, cancelled=0, valid=0;
+			long long revenue=0;
+			for(j=0; j<ticketCount; j++){
+				if(strcmp(tickets[j].tripId, cx[i].tripId) == 0){
+					total++;
+					if(tickets[j].status == 2){
+					    cancelled++;
+					} else if(tickets[j].status == 0){
+						valid++;
+					}
+					if(tickets[j].paymentStatus == 1){
+						paid++;
+						revenue += tickets[j].price;
+					}
+				}
+			}
+		    printf("| %-5s | %-10d | %-10d | %-10d | %-10d | %-10lld |\n",
+		        cx[i].tripId, total, paid, cancelled, valid, revenue);
+		    }
+		    
+	} else if(type == 3){
+		char fromDate[20], toDate[20];
+        printf("Nhap ngay bat dau (dd/mm/yy) hoac de trong: ");
+        fgets(fromDate,sizeof(fromDate),stdin);
+        fromDate[strcspn(fromDate,"\n")]=0;
+        printf("Nhap ngay ket thuc (dd/mm/yy) hoac de trong: ");
+        fgets(toDate,sizeof(toDate),stdin);
+        toDate[strcspn(toDate,"\n")]=0;
+
+        int total=0, paid=0, cancelled=0, valid=0;
+        long long revenue=0;
+        for(i=0;i<ticketCount;i++){
+            int inRange=1;
+            if(!isEmpty(fromDate) && strcmp(tickets[i].date,fromDate)<0) inRange=0;
+            if(!isEmpty(toDate) && strcmp(tickets[i].date,toDate)>0) inRange=0;
+            if(!inRange) continue;
+
+            total++;
+            if(tickets[i].paymentStatus==1) revenue += tickets[i].price;
+            if(tickets[i].paymentStatus==1) paid++;
+            if(tickets[i].status==2) cancelled++;
+            if(tickets[i].status==0) valid++;
+        }
+
+        printf("\n--- Bao cao theo khoang thoi gian ---\n");
+        printf("Tong ve trong khoang thoi gian: %d\n", total);
+        printf("Tong doanh thu                 : %lld VND\n", revenue);
+        printf("So ve huy                      : %d\n", cancelled);
+        printf("So ve con hieu luc              : %d\n", valid);
+    
+	} else {
+		printf("Ko phai lua chon hop le!\n");
+    }
 }	
