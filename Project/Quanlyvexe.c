@@ -180,7 +180,6 @@ double getValidNumber(const char *msg) {                                   //con
 }
 
 void addInfoTrip(Trip *cx, int *length) {
-	while(getchar() != '\n');
 	int i;
 	int size = getValidNumber("Nhap so luong chuyen xe: ");
 	for(i=0;i<size;i++){
@@ -264,7 +263,6 @@ void addInfoTrip(Trip *cx, int *length) {
 }
 
 void updateTrip(Trip *cx, int length){
-	while(getchar() != '\n');
     char id[20];
     printf("Nhap ma chuyen xe can cap nhat: ");
     fgets(id, sizeof(id), stdin);
@@ -358,7 +356,6 @@ int isPhone(char *s) {
 }
 
 void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
-    while (getchar() != '\n');
     if (tripCount == 0) {
         printf("Chua co chuyen xe nao. Ko the dat ve!\n");
         return;
@@ -499,7 +496,7 @@ void checkTicketStatus(Trip *trips, int tripCount, Ticket *tickets, int ticketCo
             printf("\n--------------- Thong tin ve ---------------\n");
             printf("Ten hanh khach     : %s\n", tickets[i].passenger.name);
             printf("So dien thoai      : %s\n", tickets[i].passenger.phone);
-            Trip *tripInfo = NULL;
+            Trip *tripInfo = NULL;   // ve luu trong tripId nma chuyen xe lai luu o noi khac
             for (j = 0; j < tripCount; j++) {
                 if (strcmp(trips[j].tripId, tickets[i].tripId) == 0) {
                     tripInfo = &trips[j];
@@ -513,18 +510,27 @@ void checkTicketStatus(Trip *trips, int tripCount, Ticket *tickets, int ticketCo
             }
 
             printf("So ghe             : %d\n", tickets[i].seatNumber);
-            printf("Gia ve             : %.2f\n", tickets[i].price);
+            printf("Gia ve             : %.0f\n", tickets[i].price);
             printf("Trang thai thanh toan : %s\n", tickets[i].paymentStatus == 0 ? "Chua thanh toan" : "Da thanh toan");
-            return;
+            switch (tickets[i].status) {
+			    case 1:
+			        printf("Da khoa\n");
+			        break;
+			    case 2:
+			        printf("Da huy\n");
+			        break;
+			    default:
+			        printf("Waiting...\n");
+			}
+			return;
         }
     }
-    printf("Khong tim thay ve!\n");
+    printf("Ko tim thay ve!\n");
 }
 
 void listTrips(Trip *trips, int length) {
-	while(getchar() != '\n');
     if (length <= 0) {
-        printf("Khong co chuyen xe de hien thi!\n");
+        printf("Ko co chuyen xe nao de hien thi!\n");
         return;
     }
 
@@ -641,8 +647,6 @@ void listTrips(Trip *trips, int length) {
 }
 
 void payTicket(Ticket *tickets, int ticketCount) {
-    while(getchar() != '\n');
-
     if (ticketCount == 0) {
         printf("Chua co ve nao trong he thong!\n");
         return;
@@ -691,7 +695,6 @@ void payTicket(Ticket *tickets, int ticketCount) {
 }
 
 void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCount){
-	while(getchar() != '\n');
 	if (ticketCount == 0) {
         printf("Chua co ve nao duoc dat!\n");
         return;
@@ -763,7 +766,6 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
 }
 
 void tripReport(Trip *cx, int tripCount, Ticket *tickets, int ticketCount){
-	while(getchar() != '\n');
 	int i,j;
 	if(ticketCount == 0){
 		printf("Chua co du lieu de thong ke, bao cao!\n");
