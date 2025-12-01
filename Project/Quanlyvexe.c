@@ -733,7 +733,7 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
 		break;
 	}
 	
-	Ticket *t = NULL;
+	Ticket *t = NULL; //dung con tro de ko bi phu thuoc vao i, ma van luu dc gia tri status
 	int i;
 	for(i=0; i<ticketCount; i++){
 		if(strcmp(tickets[i].ticketId, ticketId) == 0){
@@ -768,7 +768,7 @@ void manageTicketsStatus(Trip *cx, int tripCount, Ticket *tickets, int ticketCou
 		   printf("Ko the huy ve vi ve da thanh toan!\n");
 		   return;
 		}	
-		for (i=0; i < tripCount; i++){
+		for (i=0; i < tripCount; i++){ //dung i o day se khien i trong tickets[] bị thay doi, co the khai bien j va thay i=j
 			if(strcmp(cx[i].tripId, t->tripId) == 0){
 				if(cx[i].bookedSeats > 0)
 				   cx[i].bookedSeats--;
@@ -870,4 +870,5 @@ void tripReport(Trip *cx, int tripCount, Ticket *tickets, int ticketCount){
 		printf("Ko phai lua chon hop le!\n");
     }
 }	
+
 
