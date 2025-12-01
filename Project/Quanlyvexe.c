@@ -529,21 +529,25 @@ void checkTicketStatus(Trip *trips, int tripCount, Ticket *tickets, int ticketCo
             printf("So ghe             : %d\n", tickets[i].seatNumber);
             printf("Gia ve             : %.0f\n", tickets[i].price);
             printf("Trang thai thanh toan : %s\n", tickets[i].paymentStatus == 0 ? "Chua thanh toan" : "Da thanh toan");
-            switch (tickets[i].status) {
-			    case 1:
-			        printf("Da khoa\n");
-			        break;
-			    case 2:
-			        printf("Da huy\n");
-			        break;
-			    default:
-			        printf("Waiting...\n");
+			
+            if (tickets[i].paymentStatus == 0) {
+	            switch (tickets[i].status) {
+				    case 1:
+				        printf("Da khoa\n");
+				        break;
+				    case 2:
+				        printf("Da huy\n");
+				        break;
+				    default:
+				        printf("Waiting...\n");
+				}
 			}
 			return;
         }
     }
     printf("Ko tim thay ve!\n");
 }
+
 
 void listTrips(Trip *trips, int length) { 
     if (length <= 0) {
@@ -866,3 +870,4 @@ void tripReport(Trip *cx, int tripCount, Ticket *tickets, int ticketCount){
 		printf("Ko phai lua chon hop le!\n");
     }
 }	
+
