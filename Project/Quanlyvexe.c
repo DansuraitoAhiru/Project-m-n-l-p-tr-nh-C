@@ -840,12 +840,13 @@ void tripReport(Trip *cx, int tripCount, Ticket *tickets, int ticketCount){
         }
 
         printf("\n--- Bao cao theo khoang thoi gian ---\n");
-        printf("Tong ve trong khoang thoi gian: %d\n", total);
+        printf("Tong ve trong khoang thoi gian : %d\n", total);
         printf("Tong doanh thu                 : %lld VND\n", revenue);
         printf("So ve huy                      : %d\n", cancelled);
-        printf("So ve con hieu luc              : %d\n", valid);
+        printf("So ve con hieu luc             : %d\n", valid);
     
 	} else {
 		printf("Ko phai lua chon hop le!\n");
     }
 }	
+
