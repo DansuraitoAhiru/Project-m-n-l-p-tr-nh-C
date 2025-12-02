@@ -146,23 +146,6 @@ int isTripIdExists(Trip *trips, int length, char *id) {                   // ham
     return 0;                                                             // 0 la id chua ton tai
 }
 
-//int checkDate(int d, int m, int y, int min) {
-//    if (y < 1900 || y > 2100) return 0;
-//    if (m < 1 || m > 12) return 0;
-//    if (min < 0 || min > 59) return 0;
-//    int maxDay;
-//    switch(m) {
-//        case 1: case 3: case 5: case 7: case 8: case 10: case 12:
-//            maxDay = 31; break;
-//        case 4: case 6: case 9: case 11:
-//            maxDay = 30; break;
-//        case 2:
-//            maxDay = (y % 4 == 0 && (y % 100 != 0 || y % 400 == 0)) ? 29 : 28;
-//            break;
-//    }
-//    return d >= 1 && d <= maxDay;
-//}
-
 double getValidNumber(const char *msg) {                                   //const char de co dinh chuoi, ko thay doi dc
 	char buffer[50];
     double value;
@@ -398,7 +381,7 @@ void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
 
     Trip *selectedTrip = NULL;   // con tro toi chuyen xe da chon, can dung vi ng dung chinh sua truc tiep va do phai viet cx[i] moi noi
     int i;
-    for (i = 0; i < tripCount; i++) {
+    for (i = 0; i < tripCount; i++) { // i de vi tri chuyen xe
         if (strcmp(trips[i].tripId, tripId) == 0) {
             selectedTrip = &trips[i];
             break;
@@ -406,7 +389,7 @@ void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
     }
 
     int bookedCount = 0;
-    for (i = 0; i < *ticketCount; i++) {
+    for (i = 0; i < *ticketCount; i++) { // i o day de duyet mang ve, nen neu ko dung tro, i se de gay lan, cung co the thay i=j
         if (strcmp(tickets[i].tripId, tripId) == 0)
             bookedCount++;
     }
@@ -415,7 +398,7 @@ void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
 
     if (availableSeats == 0) {
         printf("Chuyen xe da het ghe!\n");
-        return;   // giup thoat ham luon, ko chay phan code con lai
+        return;   // giup thoat ham luon
     }
 
     printf("Chuyen xe nay co tong %d ghe. Da dat %d ghe.\n", selectedTrip->totalSeats, bookedCount);
@@ -462,7 +445,7 @@ void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
         printf("Ngay dat ko duoc rong!\n");
     }
 
-    int k;
+    int k; // khai bien moi de dem so ve da tao, tai dung i thi se de bi ghi de vi vong lap trc ko break, ko khuyen khich
 	for (k = 0; k < numberToBook; k++) {
         Ticket newTicket;
         strcpy(newTicket.tripId, tripId);
@@ -478,7 +461,7 @@ void bookTicket(Trip *trips, int tripCount, Ticket *tickets, int *ticketCount) {
         createdTickets[createdCount++] = newTicket;                             //*ticketCount: so ve da có truoc dó, createdCount: so vé dã tao trong lan dat hien tai
     }                                                                           //+1 la de bat dau tu 1 va de nhay sang so tiep theo
 
-    for (i = 0; i < createdCount; i++) {
+    for (i = 0; i < createdCount; i++) {  // cung muc dich de duyet qua mang ticket nen tai dung i dc
         tickets[*ticketCount] = createdTickets[i];  //Chuyen ve tu mang tam createdTickets[] sang mang tong danh sach ve tickets[]
         (*ticketCount)++;
     }
