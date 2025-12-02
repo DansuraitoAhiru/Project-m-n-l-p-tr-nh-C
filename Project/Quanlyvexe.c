@@ -137,10 +137,10 @@ int isEmpty(const char *str) {
     return 1;                                                             // Neu vong lap ket thuc ko thay ky tu nao khac khoang trang->rong->tra ve 1
 }
 
-int isTripIdExists(Trip *trips, int length, char *id) {                   // ham ktra xem ma co ton tai hay co bi trung ko
+int isTripIdExists(Trip *cx, int length, char *id) {                   // ham ktra xem ma co ton tai hay co bi trung ko
 	int i;
     for (i = 0; i < length; i++) {
-        if (strcmp(trips[i].tripId, id) == 0)
+        if (strcmp(cx[i].tripId, id) == 0)
             return 1;                                                     // 1 la id da ton tai
     }
     return 0;                                                             // 0 la id chua ton tai
@@ -184,7 +184,7 @@ void addInfoTrip(Trip *cx, int *length) {  // Neu dung int length, ham chi thay 
 	int i;
 	int size = getValidNumber("Nhap so luong chuyen xe: ");
 	for(i=0;i<size;i++){
-	    Trip newTrip;    //tao struct moi de tránh làm hong du lieu neu nguoi dung nhap sai
+	    Trip newTrip;    //tao struct moi de tránh làm hong du lieu cu trong mang cx[] neu nguoi dung nhap sai
 	    do {
 	        printf("Nhap ma chuyen xe: ");
 	        fgets(newTrip.tripId, sizeof(newTrip.tripId), stdin);
@@ -265,9 +265,15 @@ void addInfoTrip(Trip *cx, int *length) {  // Neu dung int length, ham chi thay 
 
 void updateTrip(Trip *cx, int length){
     char id[20];
-    printf("Nhap ma chuyen xe can cap nhat: ");
-    fgets(id, sizeof(id), stdin);
-    id[strcspn(id, "\n")] = 0;
+    do {
+        printf("Nhap ma chuyen xe can cap nhat: ");
+	    fgets(id, sizeof(id), stdin);
+	    id[strcspn(id, "\n")] = 0;
+
+        if (isEmpty(id))
+            printf("Ma chuyen xe ko duoc rong!\n");
+        else break;
+    } while (1);
     
     int i;
     for(i=0;i<length;i++){
